@@ -2,7 +2,6 @@ const Post = require("../models/Post");
 
 const PostController = {
     async create(req, res) {
-        console.warn("sasss");
         try {
 
             const { text } = req.body;
