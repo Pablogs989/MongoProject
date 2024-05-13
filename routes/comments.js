@@ -4,5 +4,6 @@ const { authentication } = require('../middleware/authentication.js')
 const CommentsController = require('../controllers/CommentController.js')
 
 router.post('/',authentication,CommentsController.create)
+router.delete('/',authentication,CommentsController.delete)
 
 module.exports = router

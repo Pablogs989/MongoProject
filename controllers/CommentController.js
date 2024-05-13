@@ -13,6 +13,14 @@ const CommentsController = {
           console.error(error);
         }
       },
+    async delete(req, res) {
+    try {
+        const comment = await Comments.deleteOne({_id : req.params.id});
+        res.status(201).send(comment);
+    } catch (error) {
+        console.error(error);
+    }
+    },
     
 };
 
