@@ -1,4 +1,4 @@
-const Comments = require("../models/Comments");
+const Comments = require("../models/Comment");
 
 const CommentsController = {
     async create(req, res) {
