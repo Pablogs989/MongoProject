@@ -8,6 +8,10 @@ const CommentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'User'
     },
+    postId: {
+        type: ObjectId,
+        ref: 'Post'
+    }
 }, { timestamps: true });
 
 const Comment = mongoose.model('Comment', CommentSchema);
