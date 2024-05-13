@@ -6,7 +6,8 @@ const CommentsController = {
           const comment = await Comments.create({
             ...req.body,
             userId: req.user._id,
-            postId: req.params.id
+            postId: req.params.id,
+            likes : 0
           });
           res.status(201).send(comment);
         } catch (error) {
