@@ -1,16 +1,17 @@
-const User = require("../models/User");
+const User = require("../models/User.js");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js')
 
 
 const UserController = {
-  async register(req, res) {''
+  async register(req, res) {
+    ''
     try {
-      const password = await bcrypt.hash(req.body.password,10)
-      const user = await User.create({...req.body ,  password, role : "user"});
+      const password = await bcrypt.hash(req.body.password, 10)
+      const user = await User.create({ ...req.body, password, role: "user" });
       res.status(201).send({ message: "Usuario registrado con exito", user });
-      
+
     } catch (error) {
       console.error(error);
       res.status(500).send(error)
@@ -18,24 +19,24 @@ const UserController = {
   },
   async login(req, res) {
     try {
-        const user = await User.findOne({
-            email: req.body.email,
-        })
-        if(!user){
-          return res.status(400).send("correo o constraseña incorrecto")
-        }
-        const isMatch = bcrypt.compareSync(req.body.password, user.password)
-        if(!isMatch){
-          return res.status(400).send("correo o constraseña incorrecto")
-        }
-        const token = jwt.sign({ _id: user._id }, jwt_secret);
-        if (user.tokens.length > 4) user.tokens.shift();
-        user.tokens.push(token);
-        await user.save();
-        res.send({ message: 'Bienvenid@ ' + user.email, token });
+      const user = await User.findOne({
+        email: req.body.email,
+      })
+      if (!user) {
+        return res.status(400).send("correo o constraseña incorrecto")
+      }
+      const isMatch = bcrypt.compareSync(req.body.password, user.password)
+      if (!isMatch) {
+        return res.status(400).send("correo o constraseña incorrecto")
+      }
+      const token = jwt.sign({ _id: user._id }, jwt_secret);
+      if (user.tokens.length > 4) user.tokens.shift();
+      user.tokens.push(token);
+      await user.save();
+      res.send({ message: 'Bienvenid@ ' + user.email, token });
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error)
+      console.error(error);
+      res.status(500).send(error)
     }
   },
   async logout(req, res) {
@@ -51,9 +52,9 @@ const UserController = {
       });
     }
   },
-  async loged(req,res){
+  async loged(req, res) {
     try {
-      const users = await User.findOne({email: req.user.email,})
+      const users = await User.findOne({ email: req.user.email, })
       res.send(users)
     } catch (error) {
       console.error(error);
