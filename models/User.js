@@ -21,7 +21,8 @@ const UserSchema = new mongoose.Schema({
             type: ObjectId,
             ref : 'Comment'
         }
-    ]
+    ],
+    tokens:[]
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
