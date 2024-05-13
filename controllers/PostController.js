@@ -3,7 +3,9 @@ const { create } = require("../models/User");
 
 const PostController = {
     async create(req, res) {
+        console.warn("sasss");
         try {
+
             const { text } = req.body;
             const post = new Post({
                 text,
@@ -21,7 +23,7 @@ const PostController = {
     async getAllWithUsersAndComments(req, res) {
         try {
             const posts = await Post.find()
-                .populate('userId', 'name')
+                .populate('users.name')
                 .populate({
                     path: 'commentsId',
                     populate: {
