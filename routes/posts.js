@@ -6,6 +6,7 @@ const { authentication } = require('../middleware/authentication.js')
 router.post('/',authentication, PostController.create)
 router.get('/', PostController.getAllWithUsersAndComments)
 router.post('/id/:id', PostController.postLike)
+router.get('/:id', PostController.getById)
 
 module.exports = router
 
