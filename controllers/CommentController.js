@@ -14,14 +14,44 @@ const CommentsController = {
         }
       },
     async delete(req, res) {
-    try {
-        const comment = await Comments.deleteOne({_id : req.params.id});
-        res.status(201).send(comment);
-    } catch (error) {
-        console.error(error);
-    }
+        try {
+            const comment = await Comments.findOneAndDelete({_id : req.params.id});
+            res.status(201).send(comment);
+        } catch (error) {
+            console.error(error);
+        }
     },
-    
+    async update(req, res) {
+        try {
+            const comment = await Comments.findOneAndUpdate({_id : req.params.id},{ $set:{text:req.body.text}});
+            res.status(201).send(comment);
+
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    async postLike(req, res) {
+        try {
+            const comment = await Comments.findOne({_id : req.params.id})
+            let more = comment.likes + 1
+            await Comments.findOneAndUpdate({_id : req.params.id},{$set:{likes:more}});
+            res.status(201).send(comment);
+
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    async deleteLike(req, res) {
+        try {
+            const comment = await Comments.findOne({_id : req.params.id})
+            let more = comment.likes - 1
+            await Comments.findOneAndUpdate({_id : req.params.id},{$set:{likes:more}});
+            res.status(201).send(comment);
+
+        } catch (error) {
+            console.error(error);
+        }
+    },
 };
 
 module.exports = CommentsController;
