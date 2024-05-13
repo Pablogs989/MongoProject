@@ -1,7 +1,7 @@
 const User = require('../models/User');
+const Comment = require('../models/Comment');
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js')
-const Order = require('../models/Order.js')
 
 const authentication = async(req, res, next) => {
     try {
@@ -29,8 +29,8 @@ const isAdmin = async(req, res, next) => {
 }
 const isAuthor = async(req, res, next) => {
     try {
-        const order = await Order.findById(req.params._id);
-        if (order.userId.toString() !== req.user._id.toString()) { 
+        const comment = await Comment.findById(req.params._id);
+        if (comment.userId.toString() !== req.user._id.toString()) { 
             return res.status(403).send({ message: 'No tienes permisos' });
         }
         next();

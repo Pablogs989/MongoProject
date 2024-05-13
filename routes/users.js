@@ -1,8 +1,10 @@
 const express = require('express')
 const UserController = require('../controllers/UserController')
-const routes = express.Router()
+const router = express.Router()
+const { authentication } = require('../middleware/authentication.js')
 
-routes.post('/',UserController.register)
-routes.post('/login',UserController.login)
-routes.delete('/logout',UserController.logout)
+router.post('/',UserController.register)
+router.post('/login',UserController.login)
+router.delete('/logout',authentication,UserController.logout)
 
+module.exports = router

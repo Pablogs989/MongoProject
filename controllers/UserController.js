@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs")
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js')
 
@@ -8,8 +8,9 @@ const UserController = {
   async register(req, res) {''
     try {
       const password = await bcrypt.hash(req.body.password,10)
-      const user = await User.create(req.body , req.body.password = password, req.body.role = "user");
+      const user = await User.create({...req.body ,  password, role : "user"});
       res.status(201).send({ message: "Usuario registrado con exito", user });
+      
     } catch (error) {
       console.error(error);
       res.status(500).send(error)
@@ -31,7 +32,7 @@ const UserController = {
         if (user.tokens.length > 4) user.tokens.shift();
         user.tokens.push(token);
         await user.save();
-        res.send({ message: 'Bienvenid@ ' + user.name, token });
+        res.send({ message: 'Bienvenid@ ' + user.email, token });
     } catch (error) {
         console.error(error);
         res.status(500).send(error)
