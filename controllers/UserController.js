@@ -51,6 +51,17 @@ const UserController = {
       });
     }
   },
+  async loged(req,res){
+    try {
+      const users = await User.findOne({email: req.user.email,})
+      res.send(users)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al recojer los usuarios",
+      });
+    }
+  }
 };
 
 module.exports = UserController;
