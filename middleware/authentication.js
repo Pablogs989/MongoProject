@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js')
 
@@ -27,11 +28,23 @@ const isAdmin = async(req, res, next) => {
     }
     next();
 }
-const isAuthor = async(req, res, next) => {
+const isAuthorPost = async(req, res, next) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (post.userId.toString() !== req.user._id.toString()) { 
+            return res.status(403).send({ message: "You don't have permits" });
+        }
+        next();
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error, message: 'Ha habido un problema al comprobar la autoría' })
+    }
+}
+const isAuthorComment = async(req, res, next) => {
     try {
         const comment = await Comment.findById(req.params._id);
         if (comment.userId.toString() !== req.user._id.toString()) { 
-            return res.status(403).send({ message: 'No tienes permisos' });
+            return res.status(403).send({ message: "You don't have permits"  });
         }
         next();
     } catch (error) {
@@ -40,4 +53,4 @@ const isAuthor = async(req, res, next) => {
     }
 }
 
-module.exports = { authentication, isAdmin, isAuthor };
+module.exports = { authentication, isAdmin, isAuthorComment, isAuthorPost };

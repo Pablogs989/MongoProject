@@ -43,16 +43,22 @@ const PostController = {
             res.status(500).json({ message: "Error when getting one post" });
         }
     },
-    async update(req, res) {
+    async getByText(req, res) {
         try {
-            const post = await Post.findByIdAndUpdate
-                (req.params.id, req.body
-                    , { new: true });
-            res.json(post);
-        }
-        catch (error) {
+            const post = await Post.findOne({ text: req.params.text, })
+            res.send(post);
+        } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Error when updating a post" });
+            res.status(500).json({ message: "Error when getting one post" });
+        }
+    },
+    async delete(req, res) {
+        try {
+            const post = await Post.findOneAndDelete({ _id: req.params.id });
+            res.send(post);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error when deleting a post" });
         }
     },
     async postLike(req, res) {
