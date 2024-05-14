@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const PostController = {
     async create(req, res) {
@@ -12,7 +13,10 @@ const PostController = {
                 commentsId: [],
             });
             await post.save();
-            res.send(post);
+            await User.findByIdAndUpdate(req.user._id, { $push: { postsId: post._id } })
+           
+            res.status(201).json({ message: "Post created", post });
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error when creating a post" });
@@ -21,7 +25,7 @@ const PostController = {
     async getAllWithUsersAndComments(req, res) {
         try {
             const posts = await Post.find()
-                .populate('users.name')
+                .populate('users.userId', 'name')
                 .populate({
                     path: 'commentsId',
                     populate: {
