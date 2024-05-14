@@ -1,5 +1,4 @@
 const Post = require("../models/Post");
-const User = require("../models/User");
 
 const PostController = {
     async create(req, res, next) {
@@ -12,19 +11,16 @@ const PostController = {
                 commentsId: [],
             });
             await post.save();
-            await User.findByIdAndUpdate(req.user._id, { $push: { postsId: post._id } })
-
-            res.status(201).json({ message: "Post created", post });
-
+            res.send(post);
         } catch (error) {
-            next(error)
+           next(error)
         }
     },
     async getAllWithUsersAndComments(req, res) {
-        try {
+        try {           
             const posts = await Post.find()
-                .populate('userId', 'name')
-                .populate('commentsId', 'text');
+            .populate('userId', 'name')
+            .populate('commentsId', 'text');
             res.send(posts);
         } catch (error) {
             console.error(error);
