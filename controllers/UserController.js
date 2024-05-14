@@ -53,6 +53,8 @@ const UserController = {
   async loged(req, res) {
     try {
       const users = await User.findOne({ email: req.user.email, })
+      .populate('commentsId', 'text')
+      .populate('postsId', 'text')
       res.send(users)
     } catch (error) {
       console.error(error);

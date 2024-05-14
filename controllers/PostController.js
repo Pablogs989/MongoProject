@@ -8,8 +8,6 @@ const PostController = {
             const post = new Post({
                 text,
                 userId: req.user._id,
-                likes: 0,
-                commentsId: [],
             });
             await post.save();
             await User.findByIdAndUpdate(req.user._id, { $push: { postsId: post._id } })
@@ -82,7 +80,31 @@ const PostController = {
             console.error(error);
             res.status(500).json({ message: "Error when deleting a like" });
         }
-    }
+    },async like(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params.id,
+            { $push: { likes: req.user._id } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Hay un problema con tu like" });
+        }
+    },async dislike(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params.id,
+            { $pull: { likes: req.user._id } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Hay un problema con tu dislike" });
+        }
+    },  
 };
 
 module.exports = PostController;
