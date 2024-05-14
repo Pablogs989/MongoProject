@@ -31,9 +31,6 @@ const isAdmin = async(req, res, next) => {
 const isAuthorPost = async(req, res, next) => {
     try {
         const post = await Post.findById(req.params.id);
-        console.log('====================================');
-        console.log(req.user._id.toString());
-        console.log('====================================');
         if (post.userId.toString() !== req.user._id.toString()) { 
             return res.status(403).send({ message: "You don't have permits" });
         }
