@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const CommentSchema = new mongoose.Schema({
-    text: String,
+    text: {
+        type :String,
+        require: [true, "Es necesario texto para comentar"]
+    },
     likes: Number,
     userId: {
         type: ObjectId,
