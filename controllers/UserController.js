@@ -150,14 +150,16 @@ const UserController = {
       });
     }
   },
-  async getUsersPostsFollowers(req, res) {
+  async getUsers(req, res) {
     try {
-      const followers = await User.findById(req.user._id).populate('followers', 'name');
-      const numberOfFollowers = followers.length;
       const user = await User.findById(req.user._id)
         .populate('postsId', 'text')
-        .populate(numberOfFollowers)
-      res.send(user)
+        console.log(req.user.followers.length);
+        const userWithFollowers = {
+          ...user._doc,
+          followersNumber: req.user.followers.length
+        };
+        res.send(userWithFollowers);
     } catch (error) {
       console.error(error);
       res.status(500).send({
