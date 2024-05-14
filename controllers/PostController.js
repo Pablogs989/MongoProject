@@ -2,9 +2,8 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 
 const PostController = {
-    async create(req, res) {
+    async create(req, res, next) {
         try {
-
             const { text } = req.body;
             const post = new Post({
                 text,
@@ -18,8 +17,7 @@ const PostController = {
             res.status(201).json({ message: "Post created", post });
 
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Error when creating a post" });
+           next(error)
         }
     },
     async getAllWithUsersAndComments(req, res) {
