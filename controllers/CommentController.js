@@ -1,14 +1,13 @@
-const Comments = require("../models/Comment");
+const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 
 const CommentsController = {
     async create(req, res) {
         try {
-          const comment = await Comments.create({
+          const comment = await Comment.create({
             ...req.body,
             userId: req.user._id,
             postId: req.params.id,
-            likes : 0
           });
           await Post.findByIdAndUpdate(req.params.id, { $push: { commentsId: comment._id } })
           res.status(201).send(comment);
@@ -18,7 +17,7 @@ const CommentsController = {
       },
     async delete(req, res) {
         try {
-            const comment = await Comments.findOneAndDelete({_id : req.params.id});
+            const comment = await Comment.findOneAndDelete({_id : req.params.id});
             res.status(201).send(comment);
         } catch (error) {
             console.error(error);
@@ -26,35 +25,38 @@ const CommentsController = {
     },
     async update(req, res) {
         try {
-            const comment = await Comments.findOneAndUpdate({_id : req.params.id},{ $set:{text:req.body.text}});
+            const comment = await Comment.findOneAndUpdate({_id : req.params.id},{ $set:{text:req.body.text}});
             res.status(201).send(comment);
 
         } catch (error) {
             console.error(error);
         }
     },
-    async postLike(req, res) {
+    async like(req, res) {
         try {
-            const comment = await Comments.findOne({_id : req.params.id})
-            let more = comment.likes + 1
-            await Comments.findOneAndUpdate({_id : req.params.id},{$set:{likes:more}});
-            res.status(201).send(comment);
-
+          const comment = await Comment.findByIdAndUpdate(
+            req.params.id,
+            { $push: { likes: req.user._id } },
+            { new: true }
+          );
+          res.send(comment);
         } catch (error) {
-            console.error(error);
+          console.error(error);
+          res.status(500).send({ message: "Hay un problema con tu like" });
         }
-    },
-    async deleteLike(req, res) {
+    },async dislike(req, res) {
         try {
-            const comment = await Comments.findOne({_id : req.params.id})
-            let more = comment.likes - 1
-            await Comments.findOneAndUpdate({_id : req.params.id},{$set:{likes:more}});
-            res.status(201).send(comment);
-
+          const comment = await Comment.findByIdAndUpdate(
+            req.params.id,
+            { $pull: { likes: req.user._id } },
+            { new: true }
+          );
+          res.send({message: "dislike puesto",comment});
         } catch (error) {
-            console.error(error);
+          console.error(error);
+          res.status(500).send({ message: "Hay un problema con tu dislike" });
         }
-    },
+    },   
 };
 
 module.exports = CommentsController;

@@ -6,7 +6,11 @@ const CommentSchema = new mongoose.Schema({
         type :String,
         require: [true, "Es necesario texto para comentar"]
     },
-    likes: Number,
+    likes: [
+        {
+            type: ObjectId
+        }
+    ],
     userId: {
         type: ObjectId,
         ref: 'User'
