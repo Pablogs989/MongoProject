@@ -60,7 +60,32 @@ const UserController = {
         message: "Hubo un problema al recojer los usuarios",
       });
     }
+  },
+  async getByName(req, res) {
+    try {
+      const users = await User.findOne({ name: req.params.name, })
+      res.send(users)
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al recojer los usuarios",
+      });
+    }
+  },
+  async getById(req, res) {
+    try {
+      const users = await User.findOne({ _id: req.params.id, })
+      res.send(users)
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al recojer los usuarios",
+      });
+    }
   }
+
 };
 
 module.exports = UserController;
