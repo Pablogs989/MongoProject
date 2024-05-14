@@ -18,6 +18,7 @@ const PostController = {
     },
     async getAllWithUsersAndComments(req, res) {
         try {
+            const { page = 1, limit = 10 } = req.query;              
             const posts = await Post.find()
                 .populate('users.name')
                 .populate({
