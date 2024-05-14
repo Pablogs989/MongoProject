@@ -2,7 +2,7 @@ const User = require("../models/User.js");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js')
-
+const transporter = require("../config/nodemailer");
 
 const UserController = {
   async register(req, res, next) {
@@ -15,12 +15,25 @@ const UserController = {
           return res.status(400).send("Rellena la contraseña")
         }
           const password = await bcrypt.hash(req.body.password, 10)
-          const user = await User.create({ ...req.body, password, role: "user" });
+          const user = await User.create({ ...req.body, password, role: "user", confirmed: false });
           res.status(201).send({ message: "Usuario registrado con exito", user });
       }else{
         return res.status(400).send("El usuario ya existe")
       }
-      
+      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'48h'})
+      const url = 'http://localhost:8080/users/confirm/'+ emailToken
+      await transporter.sendMail({
+        to: req.body.email,
+        subject: "Confirme su registro",
+        html: `<h3>Bienvenido, estás a un paso de registrarte </h3>
+        <a href="${url}"> Click para confirmar tu registro</a>
+        `,
+      });
+      res.status(201).send({
+        message: "Te hemos enviado un correo para confirmar el registro",
+        user,
+      });
+
     } catch (error) {
       next(error)
     }
@@ -35,6 +48,9 @@ const UserController = {
       }
       if (!req.body.password || !bcrypt.compareSync(req.body.password, user.password)) {
         return res.status(400).send("correo o constraseña incorrecto")
+      }
+      if(!user.confirmed){
+        return res.status(400).send({message:"Debes confirmar tu correo"})
       }
       const token = jwt.sign({ _id: user._id }, jwt_secret);
       if (user.tokens.length > 4) user.tokens.shift();
@@ -148,7 +164,18 @@ const UserController = {
         message: "Hubo un problema al recojer los usuarios",
       });
     }
-  }
+  },async confirm(req,res){
+    try {
+      const token = req.params.emailToken
+      const payload = jwt.verify(token,jwt_secret)
+      const email = await User.findOne({email: payload.email})
+      console.warn(await User.findByIdAndUpdate(email._id,{confirmed:true}));
+      await User.findByIdAndUpdate(email._id,{confirmed:true})
+      res.status(201).send( "Usuario confirmado con éxito" );
+    } catch (error) {
+      console.error(error)
+    }
+  },
 };
 
 module.exports = UserController;

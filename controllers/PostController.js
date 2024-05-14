@@ -58,28 +58,6 @@ const PostController = {
             console.error(error);
             res.status(500).json({ message: "Error when deleting a post" });
         }
-    },
-    async postLike(req, res) {
-        try {
-            const post = await Post.findById(req.params.id);
-            post.likes++;
-            await post.save();
-            res.json(post);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Error when liking a post" });
-        }
-    },
-    async deleteLike(req, res) {
-        try {
-            const post = await Post.findById(req.params.id);
-            post.likes--;
-            await post.save();
-            res.json(post);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Error when deleting a like" });
-        }
     },async like(req, res) {
         try {
           const revise = await Post.findOne(

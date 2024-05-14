@@ -12,5 +12,6 @@ router.get('/id/:id', UserController.getById)
 router.put('/follow/:id', authentication, UserController.follow)
 router.put('/unfollow/:id', authentication, UserController.unfollow)
 router.get('/', authentication, UserController.getUsersPostsFollowers)
+router.get('/confirm/:emailToken',UserController.confirm)
 
 module.exports = router
