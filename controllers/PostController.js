@@ -16,9 +16,12 @@ const PostController = {
            next(error)
         }
     },
-    async getAllWithUsersAndComments(req, res) {
-        try {           
+    async getAllPostWithUsersAndComments(req, res) {
+        try {     
+            const { page = 1, limit = 1 } = req.query;      
             const posts = await Post.find()
+            .limit(limit)
+            .skip((page - 1) * limit)
             .populate('userId', 'name')
             .populate('commentsId', 'text');
             res.send(posts);
