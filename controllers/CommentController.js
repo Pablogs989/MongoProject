@@ -1,4 +1,5 @@
 const Comments = require("../models/Comment");
+const Post = require("../models/Post");
 
 const CommentsController = {
     async create(req, res) {
@@ -9,6 +10,7 @@ const CommentsController = {
             postId: req.params.id,
             likes : 0
           });
+          await Post.findByIdAndUpdate(req.params.id, { $push: { commentsId: comment._id } })
           res.status(201).send(comment);
         } catch (error) {
           console.error(error);
