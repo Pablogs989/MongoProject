@@ -11,7 +11,7 @@ const PostController = {
                 commentsId: [],
             });
             await post.save();
-            res.json(post);
+            res.send(post);
         } catch (error) {
            next(error)
         }
@@ -27,7 +27,7 @@ const PostController = {
                         select: 'name'
                     }
                 });
-            res.json(posts);
+            res.send(posts);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error when getting all posts with users and comments" });
@@ -35,8 +35,8 @@ const PostController = {
     },
     async getById(req, res) {
         try {
-            const post = await Post.findById(req.params.id);
-            res.json(post);
+            const post = await Post.findOne({ _id: req.params.id, })
+            res.send(post);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error when getting one post" });
