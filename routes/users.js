@@ -9,5 +9,7 @@ router.delete('/logout', authentication, UserController.logout)
 router.get('/', authentication, UserController.loged)
 router.get('/name/:name', UserController.getByName)
 router.get('/id/:id', UserController.getById)
+router.put('/follow/:id', authentication, UserController.follow)
+router.put('/unfollow/:id', authentication, UserController.unfollow)
 
 module.exports = router

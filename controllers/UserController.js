@@ -84,8 +84,31 @@ const UserController = {
         message: "Hubo un problema al recojer los usuarios",
       });
     }
+  },
+  async follow(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(req.user._id, { $push: { following: req.params.id } })
+      await User.findByIdAndUpdate(req.params.id, { $push: { followers: req.user._id } })
+      res.send(user)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al seguir al usuario",
+      });
+    }
+  },
+  async unfollow(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(req.user._id, { $pull: { following: req.params.id } })
+      await User.findByIdAndUpdate(req.params.id, { $pull: { followers: req.user._id } })
+      res.send(user)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al dejar de seguir al usuario",
+      });
+    }
   }
-
 };
 
 module.exports = UserController;
