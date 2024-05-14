@@ -7,12 +7,20 @@ const { jwt_secret } = require('../config/keys.js')
 const UserController = {
   async register(req, res, next) {
     try {
-      if(!req.body.password){
-        return res.status(400).send("Rellena la contraseña")
+      const newUser = await User.findOne({
+        email : req.body.email
+      })
+      if(!newUser){
+        if(!req.body.password){
+          return res.status(400).send("Rellena la contraseña")
+        }
+          const password = await bcrypt.hash(req.body.password, 10)
+          const user = await User.create({ ...req.body, password, role: "user" });
+          res.status(201).send({ message: "Usuario registrado con exito", user });
+      }else{
+        return res.status(400).send("El usuario ya existe")
       }
-        const password = await bcrypt.hash(req.body.password, 10)
-        const user = await User.create({ ...req.body, password, role: "user" });
-        res.status(201).send({ message: "Usuario registrado con exito", user });
+      
     } catch (error) {
       next(error)
     }

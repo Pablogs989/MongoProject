@@ -36,24 +36,38 @@ const CommentsController = {
     },
     async like(req, res) {
         try {
-          const comment = await Comment.findByIdAndUpdate(
-            req.params.id,
-            { $push: { likes: req.user._id } },
-            { new: true }
-          );
-          res.send(comment);
+          const revise = await Comment.findOne(
+            {likes: req.user._id}
+          )
+          if(!revise){
+            const comment = await Comment.findByIdAndUpdate(
+              req.params.id,
+              { $push: { likes: req.user._id } },
+              { new: true }
+            );
+            res.send(comment);
+          }else{
+            return res.status(500).send({ message: "Ya has dado like a este comentario" })
+          }
         } catch (error) {
           console.error(error);
           res.status(500).send({ message: "Hay un problema con tu like" });
         }
     },async dislike(req, res) {
         try {
-          const comment = await Comment.findByIdAndUpdate(
-            req.params.id,
-            { $pull: { likes: req.user._id } },
-            { new: true }
-          );
-          res.send({message: "dislike puesto",comment});
+          const revise = await Comment.findOne(
+            {likes: req.user._id}
+          )
+          if(revise){
+            const comment = await Comment.findByIdAndUpdate(
+              req.params.id,
+              { $pull: { likes: req.user._id } },
+              { new: true }
+            );
+            res.send(comment);
+          }else{
+            return res.status(500).send({ message: "Ya has dado dislike a este comentario" })
+          }
         } catch (error) {
           console.error(error);
           res.status(500).send({ message: "Hay un problema con tu dislike" });

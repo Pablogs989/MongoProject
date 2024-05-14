@@ -82,24 +82,38 @@ const PostController = {
         }
     },async like(req, res) {
         try {
-          const post = await Post.findByIdAndUpdate(
-            req.params.id,
-            { $push: { likes: req.user._id } },
-            { new: true }
-          );
-          res.send(post);
+          const revise = await Post.findOne(
+            {likes: req.user._id}
+          )  
+          if(!revise){
+            const post = await Post.findByIdAndUpdate(
+                req.params.id,
+                { $push: { likes: req.user._id } },
+                { new: true }
+              );
+              res.send(post);
+          }else{
+            return res.status(400).send({ message: "Ya has dado like al post"})
+          }
         } catch (error) {
           console.error(error);
           res.status(500).send({ message: "Hay un problema con tu like" });
         }
     },async dislike(req, res) {
         try {
-          const post = await Post.findByIdAndUpdate(
-            req.params.id,
-            { $pull: { likes: req.user._id } },
-            { new: true }
-          );
-          res.send(post);
+            const revise = await Post.findOne(
+                {likes: req.user._id}
+            )
+            if(revise){ 
+                const post = await Post.findByIdAndUpdate(
+                    req.params.id,
+                    { $pull: { likes: req.user._id } },
+                    { new: true }
+                  );
+                  res.send(post);
+            }else{
+                return res.status(400).send({ message: "Ya has dado dislike al post"})
+            }
         } catch (error) {
           console.error(error);
           res.status(500).send({ message: "Hay un problema con tu dislike" });
