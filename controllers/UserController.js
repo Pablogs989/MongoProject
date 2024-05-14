@@ -89,6 +89,15 @@ const UserController = {
   },
   async follow(req, res) {
     try {
+      if (req.user._id.toString() === req.params.id) {
+        return res.status(400).send("No puedes seguirte a ti mismo")
+      }
+      if (req.user.following.includes(req.params.id)) {
+        return res.status(400).send("Ya sigues a este usuario")
+      }
+      if (!await User.findById(req.params.id)) {
+        return res.status(400).send("Usuario no encontrado")
+      }
       const user = await User.findByIdAndUpdate(req.user._id, { $push: { following: req.params.id } })
       await User.findByIdAndUpdate(req.params.id, { $push: { followers: req.user._id } })
       res.send(user)
@@ -101,6 +110,12 @@ const UserController = {
   },
   async unfollow(req, res) {
     try {
+      if (!req.user.following.includes(req.params.id)) {
+        return res.status(400).send("No sigues a este usuario")
+      }
+      if (!await User.findById(req.params.id)) {
+        return res.status(400).send("Usuario no encontrado")
+      }
       const user = await User.findByIdAndUpdate(req.user._id, { $pull: { following: req.params.id } })
       await User.findByIdAndUpdate(req.params.id, { $pull: { followers: req.user._id } })
       res.send(user)
