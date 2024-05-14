@@ -7,16 +7,17 @@ const { jwt_secret } = require('../config/keys.js')
 const UserController = {
   async register(req, res, next) {
     try {
-      if(req.body.password !== null){
+      if(!req.body.password){
+        return res.status(400).send("Rellena la contraseña")
+      }
         const password = await bcrypt.hash(req.body.password, 10)
         const user = await User.create({ ...req.body, password, role: "user" });
         res.status(201).send({ message: "Usuario registrado con exito", user });
-      }
     } catch (error) {
       next(error)
     }
   },
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const user = await User.findOne({
         email: req.body.email,
@@ -24,8 +25,7 @@ const UserController = {
       if (!user) {
         return res.status(400).send("correo o constraseña incorrecto")
       }
-      const isMatch = bcrypt.compareSync(req.body.password, user.password)
-      if (!isMatch) {
+      if (!req.body.password || !bcrypt.compareSync(req.body.password, user.password)) {
         return res.status(400).send("correo o constraseña incorrecto")
       }
       const token = jwt.sign({ _id: user._id }, jwt_secret);
@@ -34,8 +34,7 @@ const UserController = {
       await user.save();
       res.send({ message: 'Bienvenid@ ' + user.email, token });
     } catch (error) {
-      console.error(error);
-      res.status(500).send(error)
+      next(error)
     }
   },
   async logout(req, res) {
