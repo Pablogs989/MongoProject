@@ -125,6 +125,21 @@ const UserController = {
         message: "Hubo un problema al dejar de seguir al usuario",
       });
     }
+  },
+  async getUsersPostsFollowers(req, res) {
+    try {
+      const followers = await User.findById(req.user._id).populate('followers', 'name');
+      const numberOfFollowers = followers.length;
+      const user = await User.findById(req.user._id)
+        .populate('postsId', 'text')
+        .populate(numberOfFollowers)
+      res.send(user)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Hubo un problema al recojer los usuarios",
+      });
+    }
   }
 };
 
