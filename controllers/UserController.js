@@ -67,7 +67,7 @@ const UserController = {
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
-      res.send({ message: 'Welcome ' + user.email, token });
+      res.status(200).send({ message: 'Welcome ' + user.email, token });
     } catch (error) {
       next(error)
     }
@@ -188,7 +188,7 @@ const UserController = {
       const email = await User.findOne({ email: payload.email })
       console.warn(await User.findByIdAndUpdate(email._id, { confirmed: true }));
       await User.findByIdAndUpdate(email._id, { confirmed: true })
-      res.status(201).send("User confirmed");
+      res.status(201).send({message: "User confirmed"});
     } catch (error) {
       console.error(error)
     }
