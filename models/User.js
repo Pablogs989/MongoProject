@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the password field"],
     },
+    profilePic: {
+        type: String,
+        default: "https://res.cloudinary.com/dx3oz5wop/image/upload/v1622139112/Instagram/ProfilePic/defaultProfilePic.jpg"
+    },
     followers: [
         {
             type: ObjectId,

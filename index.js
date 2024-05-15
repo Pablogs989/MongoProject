@@ -8,6 +8,11 @@ const { handleTypeError }= require('./middleware/errors');
 dbConnection()
 
 app.use(express.json())
+app.use(cors());
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public/images/user/profile', express.static('/public/images/user/profile'));
+app.use('/public/images/post', express.static('/public/images/post'));
 
 app.use('/users', require('./routes/users'))
 app.use('/comments', require('./routes/comments'))
