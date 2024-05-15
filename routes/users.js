@@ -2,6 +2,7 @@ const express = require('express')
 const UserController = require('../controllers/UserController.js')
 const router = express.Router()
 const { authentication } = require('../middleware/authentication.js')
+const { uploadUserProfile } = require('../middleware/multer.js')
 
 router.post('/', UserController.register)
 router.post('/login', UserController.login)
@@ -16,5 +17,7 @@ router.get('/confirm/:emailToken',UserController.confirm)
 router.get('/recoverPassword/:email', UserController.recoverPassword)
 router.put('/resetPassword/:recoverToken', UserController.resetPassword)
 router.put('/profilePic',authentication,UserController.profilePicture)
+router.get('/confirm/:emailToken', UserController.confirm)
+router.put('/profilePic', authentication, uploadUserProfile.single("profilePic"), UserController.profilePicture)
 
 module.exports = router

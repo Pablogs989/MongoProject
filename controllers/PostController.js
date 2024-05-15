@@ -4,9 +4,13 @@ const User = require("../models/User");
 const PostController = {
     async create(req, res, next) {
         try {
-            const { text } = req.body;
+            let { text, image } = req.body;
+            if (req.file) {
+                image = req.file.filename;
+            }
             const post = new Post({
                 text,
+                image,
                 userId: req.user._id,
             });
             await post.save();
