@@ -2,6 +2,7 @@ const express = require('express')
 const UserController = require('../controllers/UserController.js')
 const router = express.Router()
 const { authentication } = require('../middleware/authentication.js')
+const { uploadUserProfile } = require('../middleware/multer.js')
 
 router.post('/', UserController.register)
 router.post('/login', UserController.login)
@@ -12,7 +13,7 @@ router.get('/id/:id', UserController.getById)
 router.put('/follow/:id', authentication, UserController.follow)
 router.put('/unfollow/:id', authentication, UserController.unfollow)
 router.get('/', authentication, UserController.getUsers)
-router.get('/confirm/:emailToken',UserController.confirm)
-router.put('/profilePic',authentication,UserController.profilePicture)
+router.get('/confirm/:emailToken', UserController.confirm)
+router.put('/profilePic', authentication, uploadUserProfile.single("profilePic"), UserController.profilePicture)
 
 module.exports = router

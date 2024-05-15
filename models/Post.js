@@ -6,6 +6,9 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the text field"]
     },
+    image: {
+        type: String,
+    },
     userId:
     {
         type: ObjectId,
@@ -23,7 +26,7 @@ const PostSchema = new mongoose.Schema({
             type: ObjectId,
             ref: 'Comment'
         }
-    ]
+    ],
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);

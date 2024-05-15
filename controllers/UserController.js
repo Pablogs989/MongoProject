@@ -40,13 +40,12 @@ const UserController = {
   },
   async profilePicture(req, res) {
     try {
-      const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path })
-      res.send(user)
+      if (req.file) req.body.profilePic = req.file.filename;
+      console.log(req.body);
+      await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+      res.send({ message: 'User profile picture successfully updated' });
     } catch (error) {
       console.error(error);
-      res.status(500).send({
-        message: "There was a problem updating the profile picture",
-      });
     }
   },
   async login(req, res, next) {

@@ -13,4 +13,7 @@ const generateUploadImageMulter = path => Multer({
     limits: { fileSize: 2 * 1024 * 1024 }
 });
 
-module.exports = {generateUploadImageMulter};
+const uploadUserProfile = generateUploadImageMulter('./public/users')
+const uploadPostImage = generateUploadImageMulter('./public/posts')
+
+module.exports = { uploadUserProfile, uploadPostImage };

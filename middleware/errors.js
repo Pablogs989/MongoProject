@@ -14,6 +14,7 @@ const handleTypeError = (error, request, response, next) => {
     } else if (error.code === 11000) {
         response.status(400).send("Email already exists");
     } else {
+        console.error(error)
         response.status(500).send("There was an error in the server");
     }
 };
