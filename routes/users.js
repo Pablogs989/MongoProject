@@ -17,7 +17,5 @@ router.get('/confirm/:emailToken',UserController.confirm)
 router.get('/recoverPassword/:email', UserController.recoverPassword)
 router.put('/resetPassword/:recoverToken', UserController.resetPassword)
 router.put('/profilePic',authentication,UserController.profilePicture)
-router.get('/confirm/:emailToken', UserController.confirm)
-router.put('/profilePic', authentication, uploadUserProfile.single("profilePic"), UserController.profilePicture)
 
 module.exports = router
