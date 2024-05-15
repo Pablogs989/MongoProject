@@ -2,7 +2,7 @@ const User = require("../models/User.js");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-const {JWT_SECRET} = process.env
+const { JWT_SECRET } = process.env
 const transporter = require("../config/nodemailer");
 
 const UserController = {
@@ -36,6 +36,17 @@ const UserController = {
 
     } catch (error) {
       next(error)
+    }
+  },
+  async profilePicture(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path })
+      res.send(user)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "There was a problem updating the profile picture",
+      });
     }
   },
   async login(req, res, next) {
