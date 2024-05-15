@@ -17,15 +17,15 @@ const PostController = {
         } catch (error) {
             next(error)
         }
-    },     
+    },
     async getAllPostWithUsersAndComments(req, res) {
         try {
-            const { page = 1, limit = 10 } = req.query;              
+            const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
-            .limit(limit)
-            .skip((page - 1) * limit)
-            .populate('userId', 'name')
-            .populate('commentsId', 'text')
+                .limit(limit)
+                .skip((page - 1) * limit)
+                .populate('userId', 'name')
+                .populate('commentsId', 'userId text')
             res.send(posts);
         } catch (error) {
             console.error(error);
@@ -35,6 +35,9 @@ const PostController = {
     async getById(req, res) {
         try {
             const post = await Post.findOne({ _id: req.params.id, })
+            if (!post) {
+                return res.status(400).send("Post not found")
+            }
             res.send(post);
         } catch (error) {
             console.error(error);
@@ -44,6 +47,9 @@ const PostController = {
     async getByText(req, res) {
         try {
             const post = await Post.findOne({ text: req.params.text, })
+            if (!post) {
+                return res.status(400).send("Post not found")
+            }
             res.send(post);
         } catch (error) {
             console.error(error);
@@ -53,50 +59,55 @@ const PostController = {
     async delete(req, res) {
         try {
             const post = await Post.findOneAndDelete({ _id: req.params.id });
+            if (!post) {
+                return res.status(400).send("Post not found")
+            }
             res.send(post);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error when deleting a post" });
         }
-    },async like(req, res) {
-        try {
-          const revise = await Post.findOne(
-            {likes: req.user._id}
-          )  
-          if(!revise){
-            const post = await Post.findByIdAndUpdate(
-                req.params.id,
-                { $push: { likes: req.user._id } },
-                { new: true }
-              );
-              res.send(post);
-          }else{
-            return res.status(400).send({ message: "Ya has dado like al post"})
-          }
-        } catch (error) {
-          console.error(error);
-          res.status(500).send({ message: "Hay un problema con tu like" });
-        }
-    },async dislike(req, res) {
+    },
+    async like(req, res) {
         try {
             const revise = await Post.findOne(
-                {likes: req.user._id}
+                { likes: req.user._id }
             )
-            if(revise){ 
+            if (!revise) {
+                const post = await Post.findByIdAndUpdate(
+                    req.params.id,
+                    { $push: { likes: req.user._id } },
+                    { new: true }
+                );
+                res.send(post);
+            } else {
+                return res.status(400).send({ message: "Ya has dado like al post" })
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Hay un problema con tu like" });
+        }
+    },
+    async dislike(req, res) {
+        try {
+            const revise = await Post.findOne(
+                { likes: req.user._id }
+            )
+            if (revise) {
                 const post = await Post.findByIdAndUpdate(
                     req.params.id,
                     { $pull: { likes: req.user._id } },
                     { new: true }
-                  );
-                  res.send(post);
-            }else{
-                return res.status(400).send({ message: "Ya has dado dislike al post"})
+                );
+                res.send(post);
+            } else {
+                return res.status(400).send({ message: "Ya has dado dislike al post" })
             }
         } catch (error) {
-          console.error(error);
-          res.status(500).send({ message: "Hay un problema con tu dislike" });
+            console.error(error);
+            res.status(500).send({ message: "Hay un problema con tu dislike" });
         }
-    },  
+    },
 };
 
 module.exports = PostController;

@@ -3,8 +3,8 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const CommentSchema = new mongoose.Schema({
     text: {
-        type :String,
-        require: [true, "Es necesario texto para comentar"]
+        type: String,
+        require: [true, "Please fill in the text field"]
     },
     likes: [
         {

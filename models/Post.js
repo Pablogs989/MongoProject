@@ -3,14 +3,14 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema({
     text: {
-        type:String,
-        required:[true, "Por favor ingresa algo para postear"]
+        type: String,
+        required: [true, "Please fill in the text field"]
     },
-    userId: 
-        {
-            type : ObjectId,
-            ref : 'User'
-        }
+    userId:
+    {
+        type: ObjectId,
+        ref: 'User'
+    }
     ,
     likes: [
         {
@@ -18,10 +18,10 @@ const PostSchema = new mongoose.Schema({
             ref: 'User'
         }
     ],
-    commentsId:[
+    commentsId: [
         {
             type: ObjectId,
-            ref : 'Comment'
+            ref: 'Comment'
         }
     ]
 }, { timestamps: true });

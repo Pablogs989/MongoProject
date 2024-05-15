@@ -4,44 +4,44 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Por favor rellena tu nombre"],
-      },
-      email: {
+        required: [true, "Please fill in the name field"],
+    },
+    email: {
         type: String,
-        match: [/.+\@.+\..+/, "Este correo no es válido"],
-        required: [true, "Por favor rellena tu correo"],
-      },  
-      password: {
+        match: [/.+\@.+\..+/, "Invalid email"],
+        required: [true, "Please fill in the email field"],
+    },
+    password: {
         type: String,
-        required: [true, "Por favor rellena tu contraseña"],
-      },
+        required: [true, "Please fill in the password field"],
+    },
     followers: [
         {
-            type : ObjectId,
-            ref : 'User'
+            type: ObjectId,
+            ref: 'User'
         }
     ],
     following: [
         {
-            type : ObjectId,
-            ref : 'User'
+            type: ObjectId,
+            ref: 'User'
         }
     ],
-    postsId:[
+    postsId: [
         {
             type: ObjectId,
-            ref : 'Post'
+            ref: 'Post'
         }
     ],
-    commentsId:[
+    commentsId: [
         {
             type: ObjectId,
-            ref : 'Comment'
+            ref: 'Comment'
         }
     ],
-    tokens:[],
-    role: { type: String, default: "user"},
-    confirmed: {type: Boolean}
+    tokens: [],
+    role: { type: String, default: "user" },
+    confirmed: { type: Boolean }
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
