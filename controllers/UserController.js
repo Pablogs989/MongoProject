@@ -1,7 +1,8 @@
 const User = require("../models/User.js");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../config/keys.js')
+require("dotenv").config();
+const {JWT_SECRET} = process.env
 const transporter = require("../config/nodemailer");
 
 const UserController = {
@@ -20,7 +21,7 @@ const UserController = {
       } else {
         return res.status(400).send("User already exists")
       }
-      const emailToken = jwt.sign({ email: req.body.email }, jwt_secret, { expiresIn: '48h' })
+      const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '48h' })
       const url = 'http://localhost:8080/users/confirm/' + emailToken
       await transporter.sendMail({
         to: req.body.email,
@@ -30,8 +31,7 @@ const UserController = {
         `,
       });
       res.status(201).send({
-        message: "Welcome, you are one step away from registering, check your email to confirm your registration",
-        user,
+        message: "Welcome, you are one step away from registering, check your email to confirm your registration"
       });
 
     } catch (error) {
@@ -52,7 +52,7 @@ const UserController = {
       if (!user.confirmed) {
         return res.status(400).send({ message: "You should confirm your email" })
       }
-      const token = jwt.sign({ _id: user._id }, jwt_secret);
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
@@ -173,7 +173,7 @@ const UserController = {
   async confirm(req, res) {
     try {
       const token = req.params.emailToken
-      const payload = jwt.verify(token, jwt_secret)
+      const payload = jwt.verify(token, JWT_SECRET)
       const email = await User.findOne({ email: payload.email })
       console.warn(await User.findByIdAndUpdate(email._id, { confirmed: true }));
       await User.findByIdAndUpdate(email._id, { confirmed: true })
