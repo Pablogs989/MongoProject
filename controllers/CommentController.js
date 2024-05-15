@@ -12,7 +12,7 @@ const CommentsController = {
       });
       await Post.findByIdAndUpdate(req.params.id, { $push: { commentsId: comment._id } })
       await User.findByIdAndUpdate(req.user._id, { $push: { commentsId: comment._id } })
-      res.status(201).send(comment);
+      res.status(201).send({message: "Comment created", comment});
     } catch (error) {
       console.error(error);
     }

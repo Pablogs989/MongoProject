@@ -7,7 +7,6 @@ const {PORT} = process.env
 const { dbConnection } = require("./config/config")
 const { handleTypeError }= require('./middleware/errors');
 
-
 dbConnection()
 
 app.use(express.json())
@@ -22,3 +21,5 @@ app.use('/posts', require('./routes/posts'))
 app.use(handleTypeError)
 
 app.listen(PORT, ()=> console.log(`Server started on port ${PORT}`));
+
+module.exports = app;
