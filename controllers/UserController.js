@@ -18,8 +18,6 @@ const UserController = {
         const password = await bcrypt.hash(req.body.password, 10)
         const user = await User.create({ ...req.body, password, role: "user", confirmed: false });
         res.status(201).send({ message: "User registered", user });
-      } else {
-        return res.status(400).send("User already exists")
       }
       const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '48h' })
       const url = 'http://localhost:8080/users/confirm/' + emailToken
@@ -136,7 +134,7 @@ const UserController = {
       }
       const user = await User.findByIdAndUpdate(req.user._id, { $push: { following: req.params.id } })
       await User.findByIdAndUpdate(req.params.id, { $push: { followers: req.user._id } })
-      res.send(user)
+      res.send({message:"User followed", user})
     } catch (error) {
       console.error(error);
       res.status(500).send({
@@ -154,7 +152,7 @@ const UserController = {
       }
       const user = await User.findByIdAndUpdate(req.user._id, { $pull: { following: req.params.id } })
       await User.findByIdAndUpdate(req.params.id, { $pull: { followers: req.user._id } })
-      res.send(user)
+      res.send({message:"User unfollowed", user})
     } catch (error) {
       console.error(error);
       res.status(500).send({

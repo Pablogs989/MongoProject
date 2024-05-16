@@ -83,7 +83,7 @@ const PostController = {
                     { $push: { likes: req.user._id } },
                     { new: true }
                 );
-                res.send(post);
+                res.status(200).send({message:"Like succesfully added", post});
             } else {
                 return res.status(400).send({ message: "You already like this post" })
             }
@@ -103,7 +103,7 @@ const PostController = {
                     { $pull: { likes: req.user._id } },
                     { new: true }
                 );
-                res.send(post);
+                res.send({message:"Dislike succesfully added", post});
             } else {
                 return res.status(400).send({ message: "You already dislike thit post" })
             }
