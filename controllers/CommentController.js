@@ -45,9 +45,9 @@ const CommentsController = {
           { $push: { likes: req.user._id } },
           { new: true }
         );
-        res.send(comment);
+        res.status(200).send({ message: "Like succesfully added",comment});
       } else {
-        return res.status(500).send({ message: "You already liked this comment" })
+        return res.status(400).send({ message: "You already liked this comment" })
       }
     } catch (error) {
       console.error(error);
@@ -65,9 +65,9 @@ const CommentsController = {
           { $pull: { likes: req.user._id } },
           { new: true }
         );
-        res.send(comment);
+        res.status(200).send({ message: "Dislike succesfully added",comment});
       } else {
-        return res.status(500).send({ message: "You alrady disliked this comment" })
+        return res.status(400).send({ message: "You alrady disliked this comment" })
       }
     } catch (error) {
       console.error(error);
