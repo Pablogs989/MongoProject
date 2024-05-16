@@ -16,8 +16,8 @@ const UserController = {
           return res.status(400).send("Complete the password field")
         }
         const password = await bcrypt.hash(req.body.password, 10)
-        const user = await User.create({ ...req.body, password, role: "user", confirmed: false });
-        res.status(201).send({ message: "User registered", user });
+        if (req.file) req.body.profilePic = req.file.filename;
+        await User.create({ ...req.body, password, role: "user", confirmed: false });
       } else {
         return res.status(400).send("User already exists")
       }
@@ -184,7 +184,7 @@ const UserController = {
       const payload = jwt.verify(token, JWT_SECRET)
       const email = await User.findOne({ email: payload.email })
       await User.findByIdAndUpdate(email._id, { confirmed: true })
-      res.status(201).send({message: "User confirmed"});
+      res.status(201).send({ message: "User confirmed" });
     } catch (error) {
       console.error(error)
     }
@@ -217,7 +217,7 @@ const UserController = {
       const password = bcrypt.hashSync(req.body.password, 10)
       await User.findOneAndUpdate(
         { email: payload.email },
-        { password}
+        { password }
       );
       res.send({ message: "password change succes" });
     } catch (error) {

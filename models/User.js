@@ -17,7 +17,6 @@ const UserSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String,
-        default: "https://res.cloudinary.com/dx3oz5wop/image/upload/v1622139112/Instagram/ProfilePic/defaultProfilePic.jpg"
     },
     followers: [
         {
