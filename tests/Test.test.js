@@ -55,15 +55,22 @@ describe("testing", () => {
             .expect(201)
             .set({ Authorization: token })
         expect(res.body.message).toBe("Post created")
-        postId = res.body._id
+        postId = res.body.post._id
     });
-    console.warn(postId);
     test("Comment create", async () => {
         const res = await request(app)
+            
             .post("/comments/id/" + postId)
             .send(comment)
             .expect(201)
             .set({ Authorization: token })
         expect(res.body.message).toBe("Comment created")
+    });
+    test("Post like", async () => {
+        const res = await request(app)
+            .put("/like/" + postId)
+            .expect(201)
+            .set({ Authorization: token })
+        expect(res.body.message).toBe("You already like this post")
     });
 })

@@ -41,7 +41,6 @@ const UserController = {
   async profilePicture(req, res) {
     try {
       if (req.file) req.body.profilePic = req.file.filename;
-      console.log(req.body);
       await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
       res.send({ message: 'User profile picture successfully updated' });
     } catch (error) {
@@ -167,7 +166,6 @@ const UserController = {
     try {
       const user = await User.findById(req.user._id)
         .populate('postsId', 'text')
-      console.log(req.user.followers.length);
       const userWithFollowers = {
         ...user._doc,
         followersNumber: req.user.followers.length
@@ -185,7 +183,6 @@ const UserController = {
       const token = req.params.emailToken
       const payload = jwt.verify(token, JWT_SECRET)
       const email = await User.findOne({ email: payload.email })
-      console.warn(await User.findByIdAndUpdate(email._id, { confirmed: true }));
       await User.findByIdAndUpdate(email._id, { confirmed: true })
       res.status(201).send({message: "User confirmed"});
     } catch (error) {

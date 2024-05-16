@@ -85,11 +85,11 @@ const PostController = {
                 );
                 res.send(post);
             } else {
-                return res.status(400).send({ message: "Ya has dado like al post" })
+                return res.status(400).send({ message: "You already like this post" })
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: "Hay un problema con tu like" });
+            res.status(500).send({ message: "There are a problem with your like" });
         }
     },
     async dislike(req, res) {
@@ -105,11 +105,11 @@ const PostController = {
                 );
                 res.send(post);
             } else {
-                return res.status(400).send({ message: "Ya has dado dislike al post" })
+                return res.status(400).send({ message: "You already dislike thit post" })
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: "Hay un problema con tu dislike" });
+            res.status(500).send({ message: "There are a problem with your dislike" });
         }
     },
 };
