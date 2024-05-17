@@ -6,6 +6,8 @@ require("dotenv").config();
 const {PORT} = process.env
 const { dbConnection } = require("./config/config")
 const { handleTypeError }= require('./middleware/errors');
+const swaggerUI = require('swagger-ui-express')
+const docs = require('./docs/index')
 
 dbConnection()
 
@@ -19,6 +21,8 @@ app.use('/comments', require('./routes/comments'))
 app.use('/posts', require('./routes/posts'))
 
 app.use(handleTypeError)
+
+app.use('/api-docs', swaggerUI.serve,swaggerUI.setup(docs))
 
 app.listen(PORT, ()=> console.log(`Server started on port ${PORT}`));
 
