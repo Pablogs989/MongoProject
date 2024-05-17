@@ -2,7 +2,7 @@ const User = require("../models/User.js");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-const { JWT_SECRET } = process.env
+const { JWT_SECRET, EMAILURL } = process.env
 const transporter = require("../config/nodemailer");
 
 const UserController = {
@@ -22,7 +22,7 @@ const UserController = {
         return res.status(400).send("User already exists")
       }
       const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '48h' })
-      const url = 'http://localhost:8080/users/confirm/' + emailToken
+      const url = EMAILURL + '/users/confirm/' + emailToken
       await transporter.sendMail({
         to: req.body.email,
         subject: "Confirm your email",
