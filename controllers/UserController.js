@@ -194,7 +194,7 @@ const UserController = {
       const recoverToken = jwt.sign({ email: req.params.email }, JWT_SECRET, {
         expiresIn: "48h",
       });
-      const url = "http://localhost:8080/users/resetPassword/" + recoverToken;
+      const url = EMAILURL + "/users/resetPassword/" + recoverToken;
       await transporter.sendMail({
         to: req.params.email,
         subject: "Recover password",
