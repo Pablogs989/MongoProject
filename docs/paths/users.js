@@ -22,6 +22,8 @@ module.exports = {
                 },
             },
         },
+    },
+    "/users/loged":{
         get: {
             security: [{
                 ApiKeyAuth: []
