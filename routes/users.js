@@ -12,10 +12,11 @@ router.get('/name/:name', UserController.getByName)
 router.get('/id/:id', UserController.getById)
 router.put('/follow/:id', authentication, UserController.follow)
 router.put('/unfollow/:id', authentication, UserController.unfollow)
-router.get('/', authentication, UserController.getUsers)
+router.get('/', UserController.getUsers)
 router.get('/confirm/:emailToken',UserController.confirm)
 router.get('/recoverPassword/:email', UserController.recoverPassword)
 router.put('/resetPassword/:recoverToken', UserController.resetPassword)
 router.put('/profilePic',authentication, uploadUserProfile.single("profilePic"), UserController.profilePicture)
+router.put('/update',authentication, UserController.update)
 
 module.exports = router

@@ -26,8 +26,8 @@ const PostController = {
         try {
             const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
-                .limit(limit)
-                .skip((page - 1) * limit)
+                // .limit(limit)
+                // .skip((page - 1) * limit)
                 .populate('userId', 'name')
                 .populate('commentsId', 'userId text')
             res.send(posts);
@@ -39,6 +39,8 @@ const PostController = {
     async getById(req, res) {
         try {
             const post = await Post.findOne({ _id: req.params.id, })
+                .populate('commentsId')
+
             if (!post) {
                 return res.status(400).send("Post not found")
             }
@@ -75,15 +77,19 @@ const PostController = {
     async like(req, res) {
         try {
             const revise = await Post.findOne(
-                { likes: req.user._id }
+                {   _id: req.params.id,
+                    likes: req.user._id }
             )
+
             if (!revise) {
                 const post = await Post.findByIdAndUpdate(
                     req.params.id,
                     { $push: { likes: req.user._id } },
                     { new: true }
-                );
-                res.status(200).send({message:"Like succesfully added", post});
+                )
+                    .populate('commentsId')
+
+                return res.status(200).send({ message: "Like succesfully added", post });
             } else {
                 return res.status(400).send({ message: "You already like this post" })
             }
@@ -95,15 +101,19 @@ const PostController = {
     async dislike(req, res) {
         try {
             const revise = await Post.findOne(
-                { likes: req.user._id }
+                {   _id: req.params.id,
+                    likes: req.user._id }
             )
+                .populate('commentsId')
             if (revise) {
                 const post = await Post.findByIdAndUpdate(
                     req.params.id,
                     { $pull: { likes: req.user._id } },
                     { new: true }
-                );
-                res.send({message:"Dislike succesfully added", post});
+                )
+                    .populate('commentsId')
+
+                res.send({ message: "Dislike succesfully added", post });
             } else {
                 return res.status(400).send({ message: "You already dislike thit post" })
             }
